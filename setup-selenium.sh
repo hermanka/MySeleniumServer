@@ -23,7 +23,7 @@ ln -s selenium-server-standalone-3.10.0.jar selenium-server-standalone.jar
 chmod a+x selenium-server-standalone.jar
 mkdir -p /var/log/selenium
 chmod a+w /var/log/selenium
-curl -s https://gist.githubusercontent.com/adeubank/2d92d66caff2727ce1cc/raw/f94e62fb257e9220b7934724dc89d6763876a07c/selenium > /etc/init.d/selenium
+curl -s https://raw.githubusercontent.com/hermanka/MySeleniumServer/master/selenium > /etc/init.d/selenium
 chmod 755 /etc/init.d/selenium
 chkconfig selenium
 
