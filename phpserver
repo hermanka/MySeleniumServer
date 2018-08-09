@@ -1,0 +1,52 @@
+#!/bin/bash
+
+case "${1:-''}" in
+    'start')
+        if test -f /tmp/phpserver.pid
+        then
+            echo "PhpServer is already running."
+        else
+            php -S 0.0.0.0:8004 -t /home/akeo/selenium/www/ > /var/log/phpserver/output.log 2> /var/log/phpserver/error.log & echo $! > /tmp/phpserver.pid
+            echo "Starting PhpServer..."
+
+            error=$?
+            if test $error -gt 0
+            then
+                echo "${bon}Error $error! Couldn't start PhpServer!${boff}"
+            fi
+        fi
+    ;;
+    'stop')
+        if test -f /tmp/phpserver.pid
+        then
+            echo "Stopping PhpServer..."
+            PID=`cat /tmp/phpserver.pid`
+            kill -3 $PID
+            if kill -9 $PID ;
+                then
+                    sleep 2
+                    test -f /tmp/phpserver.pid && rm -f /tmp/phpserver.pid
+                else
+                    echo "PhpServer could not be stopped..."
+                fi
+        else
+            echo "PhpServer is not running."
+        fi
+        ;;
+    'restart')
+        if test -f /tmp/phpserver.pid
+        then
+            kill -HUP `cat /tmp/phpserver.pid`
+            test -f /tmp/phpserver.pid && rm -f /tmp/phpserver.pid
+            sleep 1
+            php -S 0.0.0.0:8004  -t /home/akeo/selenium/www/ > /var/log/phpserver/output.log 2> /var/log/phpserver/error.log & echo $! > /tmp/phpserver.pid
+			echo "Reload PhpServer..."
+        else
+            echo "PhpServer isn't running..."
+        fi
+        ;;
+    *)      # no parameter specified
+        echo "Usage: $SELF start|stop|restart"
+        exit 1
+    ;;
+esac
